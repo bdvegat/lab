@@ -15,7 +15,7 @@ function viterbi2(input="1101000111")
   
   input_len=length(input);
   input=partir (input);
-  PM=inf(4,input_len/2);
+  PM=inf(4,1+input_len/2);
   BM=[];
   PM(1,1)=0;
   path=[];
@@ -34,15 +34,12 @@ function viterbi2(input="1101000111")
         PM(j,i+1)=PM(a,i)+BM(aux(a)+sa,i);
         path(j,i)=a;
         out(j,i)=mt(aux(a)+sa,4);
-        PM(j,b)=inf;
       else
         PM(j,i+1)=PM(b,i)+BM(aux(b)+sb,i);
         path(j,i)=b;
         out(j,i)=mt(aux(b)+sb,4);
-        PM(j,a)=inf;
       endif
     endfor
-    PM
     graficar(path,PM,i);
   endfor
   graficar(path,PM,length(PM));
@@ -65,7 +62,7 @@ function viterbi2(input="1101000111")
   
   BM;
   PM
-  path
+  path;
   c=dec(c,out);
   d=decode(c);
   fprintf('c = ')
@@ -154,44 +151,47 @@ function ans = decode(str)
 endfunction 
 
 function graficar(path,PM,L)
-  k=L
+  k=L;
   if k==1
     return
   endif
   
   subplot(3,2,k-1);
   for i=1:4
-    line ([1 length(PM)], [i i], "linestyle", "--", "color", "g");
+    line ([1 length(PM)], [i i], "linestyle", "-", "color", "g");
   endfor
   
   for i=1:length(PM)
-    line ([i i], [0 4], "linestyle", "--", "color", "g");
+    line ([i i], [1 4], "linestyle", "-", "color", "g");
   endfor
   
   if k==length(PM)
     min=inf;
     for i=1:4
       if PM(i,k) <= min
-        min_indx=i
+        min_indx=i;
         min=PM(i,k);
       endif
     endfor
     while k>=2
-      line ([k-1 k], [abs(path(min_indx,k-1)-5) abs(min_indx-5)], "linestyle", "-", "color", "k");
+      line ([k-1 k], [path(min_indx,k-1) min_indx], "linestyle", "-", "color", "k");
       min_indx=path(min_indx,k-1);
       k--;
     endwhile
-      axis([0.9 length(PM) -0.1 4.1]);
+      axis([0.9 length(PM) 1 5],"ij");
     return
   endif
   
-  while k>=2
-    for i = 1:4
-      if PM(i,k)!=inf
-        line ([k-1 k], [abs(path(i,k-1)-5) abs(i-5)], "linestyle", "-", "color", "k");
-      endif
-    endfor
-    k--;
-  endwhile
-  axis([0.9 length(PM) -0.1 4.1]);
+  for i = 1:4
+    if PM(i,k)!=inf
+      m=k;
+      prev=i;
+      while m>=2
+        line ([m-1 m], [path(prev,m-1) prev], "linestyle", "-", "color", "k");
+        prev = path(prev,m-1);
+        m--;      
+      endwhile
+    endif
+  endfor
+  axis([0.9 length(PM) 1 5],"ij");
 endfunction
