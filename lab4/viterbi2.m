@@ -153,10 +153,11 @@ endfunction
 
 function graficar(path,PM,L)
   k=L;
+  div=ceil(length(PM)/2);
   if k==1
     return
   endif
-  subplot(3,2,k-1);
+  subplot(div,2,k-1);
   for i=1:4
     line ([1 length(PM)], [i i], "linestyle", "--", "color", "g");
   endfor
@@ -181,8 +182,9 @@ function graficar(path,PM,L)
 endfunction
 
 function graficar_mejor_camino(path,PM)
-  k=length(PM)
-  subplot(3,2,k);
+  k=length(PM);
+  div=ceil(k/2);
+  subplot(div,2,k);
   for i=1:4
     line ([1 length(PM)], [i i], "linestyle", "--", "color", "g");
   endfor
