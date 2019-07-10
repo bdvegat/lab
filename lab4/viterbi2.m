@@ -42,8 +42,10 @@ function viterbi2(input="1101000111")
         PM(j,a)=inf;
       endif
     endfor
-        graficar(path,PM,i);
+    PM
+    graficar(path,PM,i);
   endfor
+  graficar(path,PM,length(PM));
   k=length(PM);
   c=[];
   min=inf;
@@ -151,16 +153,45 @@ function ans = decode(str)
   endfor
 endfunction 
 
-function graficar(path,PM,i)
-  k=i
+function graficar(path,PM,L)
+  k=L
   if k==1
     return
   endif
+  
   subplot(3,2,k-1);
-  for i=0:4
-    line ([0 k+1], [i i], "linestyle", "--", "color", "b");
+  for i=1:4
+    line ([1 length(PM)], [i i], "linestyle", "--", "color", "g");
   endfor
+  
+  for i=1:length(PM)
+    line ([i i], [0 4], "linestyle", "--", "color", "g");
+  endfor
+  
+  if k==length(PM)
+    min=inf;
+    for i=1:4
+      if PM(i,k) <= min
+        min_indx=i
+        min=PM(i,k);
+      endif
+    endfor
+    while k>=2
+      line ([k-1 k], [abs(path(min_indx,k-1)-5) abs(min_indx-5)], "linestyle", "-", "color", "k");
+      min_indx=path(min_indx,k-1);
+      k--;
+    endwhile
+      axis([0.9 length(PM) -0.1 4.1]);
+    return
+  endif
+  
   while k>=2
+    for i = 1:4
+      if PM(i,k)!=inf
+        line ([k-1 k], [abs(path(i,k-1)-5) abs(i-5)], "linestyle", "-", "color", "k");
+      endif
+    endfor
     k--;
   endwhile
+  axis([0.9 length(PM) -0.1 4.1]);
 endfunction
