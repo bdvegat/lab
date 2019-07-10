@@ -36,8 +36,8 @@ function viterbi(input="110011")
   min=inf
   for i=1:4
     if PM(i,k)<=min
-       min=PM(i,k)
-       min_indx=i
+       min=PM(i,k);
+       min_indx=i;
     endif
   endfor
   a=
