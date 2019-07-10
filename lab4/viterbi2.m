@@ -43,6 +43,7 @@ function viterbi2(input="1101000111")
     graficar(path,PM,i);
   endfor
   graficar(path,PM,length(PM));
+  graficar_mejor_camino(path,PM);
   k=length(PM);
   c=[];
   min=inf;
@@ -155,32 +156,14 @@ function graficar(path,PM,L)
   if k==1
     return
   endif
-  
   subplot(3,2,k-1);
   for i=1:4
-    line ([1 length(PM)], [i i], "linestyle", "-", "color", "g");
+    line ([1 length(PM)], [i i], "linestyle", "--", "color", "g");
   endfor
   
   for i=1:length(PM)
-    line ([i i], [1 4], "linestyle", "-", "color", "g");
+    line ([i i], [1 4], "linestyle", "--", "color", "g");
   endfor
-  
-  if k==length(PM)
-    min=inf;
-    for i=1:4
-      if PM(i,k) <= min
-        min_indx=i;
-        min=PM(i,k);
-      endif
-    endfor
-    while k>=2
-      line ([k-1 k], [path(min_indx,k-1) min_indx], "linestyle", "-", "color", "k");
-      min_indx=path(min_indx,k-1);
-      k--;
-    endwhile
-      axis([0.9 length(PM) 1 5],"ij");
-    return
-  endif
   
   for i = 1:4
     if PM(i,k)!=inf
@@ -188,6 +171,7 @@ function graficar(path,PM,L)
       prev=i;
       while m>=2
         line ([m-1 m], [path(prev,m-1) prev], "linestyle", "-", "color", "k");
+        text(m,prev+0.3,num2str(PM(prev,m)));
         prev = path(prev,m-1);
         m--;      
       endwhile
@@ -195,3 +179,30 @@ function graficar(path,PM,L)
   endfor
   axis([0.9 length(PM) 1 5],"ij");
 endfunction
+
+function graficar_mejor_camino(path,PM)
+  k=length(PM)
+  subplot(3,2,k);
+  for i=1:4
+    line ([1 length(PM)], [i i], "linestyle", "--", "color", "g");
+  endfor
+  
+  for i=1:length(PM)
+    line ([i i], [1 4], "linestyle", "--", "color", "g");
+  endfor
+  min=inf;
+  for i=1:4
+    if PM(i,k) <= min
+      min_indx=i;
+      min=PM(i,k);
+    endif
+  endfor
+  text(k,min_indx+0.3,num2str(PM(min_indx,k)));
+  while k>=2
+    line ([k-1 k], [path(min_indx,k-1) min_indx], "linestyle", "-", "color", "k");
+    min_indx=path(min_indx,k-1);
+    k--;
+  endwhile
+    axis([0.9 length(PM) 1 5],"ij");
+endfunction
+
